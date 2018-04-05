@@ -23,6 +23,10 @@ Resources:
         sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
         sleep 1m
         wget http://localhost:8080/jnlpJars/jenkins-cli.jar
+        sudo mkdir /var/lib/jenkins/init.groovy.d
+        sudo wget https://raw.githubusercontent.com/patnaikshekhar/JenkinsSalesforceSample/master/init.groovy -O /var/lib/jenkins/init.groovy.d/init.groovy
+        sudo service jenkins restart
+        sleep 1m
         java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin blueocean --username admin --password-file /var/lib/jenkins/secrets/initialAdminPassword
   JenkinsSecurityGroup:
     Type: AWS::EC2::SecurityGroup
