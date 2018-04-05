@@ -27,9 +27,6 @@ Resources:
         sudo wget https://raw.githubusercontent.com/patnaikshekhar/JenkinsSalesforceSample/master/init.groovy -O /var/lib/jenkins/init.groovy.d/init.groovy
         sudo service jenkins restart
         sleep 1m
-        java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin blueocean --username admin --password admin123
-        sudo service jenkins restart
-        sleep 1m
   JenkinsSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
