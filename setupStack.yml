@@ -19,13 +19,10 @@ Resources:
         sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
         sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
         sudo yum install jenkins -y
-        sudo service jenkins start
-        sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
-        sleep 1m
-        wget http://localhost:8080/jnlpJars/jenkins-cli.jar
         sudo mkdir /var/lib/jenkins/init.groovy.d
         sudo wget https://raw.githubusercontent.com/patnaikshekhar/JenkinsSalesforceSample/master/init.groovy -O /var/lib/jenkins/init.groovy.d/init.groovy
-        sudo service jenkins restart
+        sudo service jenkins start
+        sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
         sleep 1m
   JenkinsSecurityGroup:
     Type: AWS::EC2::SecurityGroup

@@ -17,7 +17,4 @@ aws cloudformation describe-stacks --stack-name JenkinsSample --query 'Stacks[0]
 export URL="$(aws cloudformation describe-stacks --stack-name JenkinsSample --query 'Stacks[0].Outputs[1].OutputValue' | tr -d '\"')"
 
 echo "URL for Jenkins"
-echo "https://${URL}"
-
-echo "Opening URL"
-open "https://${URL}"
+echo "https://${URL}/blue/organizations/jenkins/pipelines"
