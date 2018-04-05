@@ -11,5 +11,13 @@ aws cloudformation deploy --template-file setupStack.yml --stack-name JenkinsSam
 echo "Waiting for the stack creation to be completed"
 aws cloudformation wait stack-create-complete --stack-name JenkinsSample
 
-echo "Stack creation results"
-aws cloudformation describe-stacks --stack-name JenkinsSample
+echo "Waiting for instance to complete running"
+aws cloudformation describe-stacks --stack-name JenkinsSample --query 'Stacks[0].Outputs[0].OutputValue' | aws ec2 wait instance-status-ok --instance-ids
+
+export URL="$(aws cloudformation describe-stacks --stack-name JenkinsSample --query 'Stacks[0].Outputs[1].OutputValue' | tr -d '\"')"
+
+echo "URL for Jenkins"
+echo "https://${URL}"
+
+echo "Opening URL"
+open "https://${URL}"
