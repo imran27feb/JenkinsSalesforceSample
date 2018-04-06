@@ -6,7 +6,7 @@ echo "Waiting for the stack to be deleted"
 aws cloudformation wait stack-delete-complete --stack-name JenkinsSample
 
 echo "Creating new stack"
-aws cloudformation deploy --template-file setupStack.yml --stack-name JenkinsSample
+aws cloudformation deploy --template-file setupStack.yml --stack-name JenkinsSample --parameter-overrides KeyName=ec2-test
 
 echo "Waiting for the stack creation to be completed"
 aws cloudformation wait stack-create-complete --stack-name JenkinsSample

@@ -1,33 +1,40 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: Setup 
+Parameters:
+  KeyName:
+    Description: The EC2 Key Pair to allow SSH access to the instance
+    Type: 'AWS::EC2::KeyPair::KeyName'
 Resources:
   Jenkins:
     Type: AWS::EC2::Instance
     Properties:
       ImageId: ami-dff017b8
       InstanceType: t2.nano
-      KeyName: ec2-test
+      KeyName: !Ref KeyName
       SecurityGroups:
-        - !Ref JenkinsSecurityGroup
+        - !Ref SFDXJenkinsSecurityGroup
       UserData: !Base64 |
         #!/bin/bash -x
         yum update –y
         yum -y install git
         su - ec2-user <<EOF
+        sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
         sudo yum install java-1.8.0 -y
         sudo yum remove java-1.7.0-openjdk -y
+        wget https://developer.salesforce.com/media/salesforce-cli/sfdx-v5.99.1-d7efd75-linux-amd64.tar.xz
+        tar -xvJf sfdx-v5.9.9-d42cf65-linux-amd64.tar.xz
+        cd sfdx
+        ./install
         sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
         sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
         sudo yum install jenkins -y
         sudo mkdir /var/lib/jenkins/init.groovy.d
         sudo wget https://raw.githubusercontent.com/patnaikshekhar/JenkinsSalesforceSample/master/init.groovy -O /var/lib/jenkins/init.groovy.d/init.groovy
         sudo service jenkins start
-        sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
-        sleep 1m
-  JenkinsSecurityGroup:
+  SFDXJenkinsSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Jenkins Ingress
+      GroupDescription: SFDX Jenkins Ingress
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
